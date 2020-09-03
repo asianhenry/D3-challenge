@@ -143,7 +143,7 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
     .attr("class", "d3-tip")
 	.style("background", "black")
     .style("color", "white")
-    .offset([90, -50])
+    .offset([120, -60])
     .html(function(d) {
 		
 		if (chosenXAxis === "poverty")	{
@@ -156,12 +156,21 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
 
   circlesGroup.call(toolTip);
 
-  circlesGroup.on("mouseover", function(data) {
+  circlesGroup.on("click", function(data) {
+	d3.select(this)
+		.transition()
+        .attr('r', 20)
+		.attr("fill", "yellow")
+        .attr("opacity", ".5");
     toolTip.show(data,this);
 	
   })
     //onmouseout event
     .on("mouseout", function(data) {
+	 d3.select(this)
+		.attr("r", "15")
+		.attr("fill", "blue")
+		.attr("opacity", ".5")
       toolTip.hide(data, this)
     });
 
