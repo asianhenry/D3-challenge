@@ -109,44 +109,64 @@ function renderCirclesTextY(circleTextGroup, newYScale, chosenYAxis) {
   return circleTextGroup;
 }
 
-//-----------------------
-
-
-
-
 
 // function used for updating circles group with new tooltip
+function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
 
-// function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
+  var xlabel;
 
-  // var label;
+  if (chosenXAxis === "poverty") {
+    xlabel = "Poverty:";
+  }
+  else if (chosenXAxis === "age") {
+    xlabel = "Median Age:";
+  }
+   else if (chosenXAxis === "income") {
+    xlabel = "Household Income:";
+  }
+  
+  var ylabel;
+  
+  if (chosenYAxis === "obesity") {
+    ylabel = "Poverty:";
+  }
+  else if (chosenYAxis === "smokes") {
+    ylabel = "Smokes:";
+  }
+   else if (chosenYAxis === "healthcare") {
+    ylabel = "Lacks Heathcare:";
+  }
 
-  // if (chosenXAxis === "poverty") {
-    // label = "Poverty:";
-  // }
-  // else {
-    // label = "# of Albums:";
-  // }
 
-  // var toolTip = d3.tip()
-    // .attr("class", "tooltip")
-    // .offset([80, -60])
-    // .html(function(d) {
-      // return (`${d.rockband}<br>${label} ${d[chosenXAxis]}`);
-    // });
 
-  // circlesGroup.call(toolTip);
+  var toolTip = d3.tip()
+    .attr("class", "d3-tip")
+	.style("background", "black")
+    .style("color", "white")
+    .offset([90, -50])
+    .html(function(d) {
+		
+		if (chosenXAxis === "poverty")	{
+			return (`${d.state}<br>${xlabel} ${d[chosenXAxis]}%<br>${ylabel} ${d[chosenYAxis]}%`);
+		}
+		else {
+		return (`${d.state}<br>${xlabel} ${d[chosenXAxis]}<br>${ylabel} ${d[chosenYAxis]}%`);
+		}
+    });
 
-  // circlesGroup.on("mouseover", function(data) {
-    // toolTip.show(data);
-  // })
-    // onmouseout event
-    // .on("mouseout", function(data, index) {
-      // toolTip.hide(data);
-    // });
+  circlesGroup.call(toolTip);
 
-  // return circlesGroup;
-// }
+  circlesGroup.on("mouseover", function(data) {
+    toolTip.show(data,this);
+	
+  })
+    //onmouseout event
+    .on("mouseout", function(data) {
+      toolTip.hide(data, this)
+    });
+
+  return circlesGroup;
+};
 
 
 
@@ -219,16 +239,7 @@ function renderCirclesTextY(circleTextGroup, newYScale, chosenYAxis) {
 	.attr("x", d => xLinearScale(d[chosenXAxis]))
     .attr("y", d => yLinearScale(d[chosenYAxis]));
 	
-	// var toolTip = d3.tip()
-      // .attr("class", "tooltip")
-      // .offset([80, -60])
-      // .html(function(d) {
-        // return (`${d.state}<br>${chosenXAxis}: ${d[chosenXAxis]}<br>${chosenYAxis}: ${d[chosenYAXis]}`);
-      // });
-	  
-	  
-	  
-	  //==============================
+
 	  // Create group for three x-axis labels
   var xlabelsGroup = chartGroup.append("g")
     .attr("transform", `translate(${width / 2}, ${height + 20})`);
@@ -284,6 +295,9 @@ function renderCirclesTextY(circleTextGroup, newYScale, chosenYAxis) {
     .classed("active", true)
     .text("Lacks Healthcare (%)");
 	
+	
+  var circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
+	
 
   // x axis labels event listener
   xlabelsGroup.selectAll("text")
@@ -312,7 +326,7 @@ function renderCirclesTextY(circleTextGroup, newYScale, chosenYAxis) {
 		
 
         // updates tooltips with new info
-        // circlesGroup = updateToolTip(chosenXAxis, chosenYAxis circlesGroup);
+        circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
 
         // changes classes to change bold text
         if (chosenXAxis === "poverty") {
@@ -377,7 +391,7 @@ function renderCirclesTextY(circleTextGroup, newYScale, chosenYAxis) {
 		circleTextGroup = renderCirclesTextY(circleTextGroup, yLinearScale, chosenYAxis);
 
         // updates tooltips with new info
-        // circlesGroup = updateToolTip(chosenXAxis, chosenYAxis circlesGroup);
+        circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
 
         // changes classes to change bold text
         if (chosenYAxis === "healthcare") {
